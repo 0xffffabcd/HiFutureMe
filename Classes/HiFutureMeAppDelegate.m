@@ -62,6 +62,7 @@
     
     // Override point for customization after application launch.
 	NSDate* now = [[NSDate alloc] init];
+	[receiveTime setTimeZone:[NSTimeZone localTimeZone]];
 	[receiveTime setMinimumDate:now];
 	[receiveTime setDate:now];
 	[now release];
