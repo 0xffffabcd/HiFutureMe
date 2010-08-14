@@ -20,7 +20,7 @@
 	UIAlertView* aView = [[UIAlertView alloc] initWithTitle:@"Message Sent" 
 													message:@"Future You has received it." 
 												   delegate:nil 
-										  cancelButtonTitle:@"Dismiss" 
+										  cancelButtonTitle:@"OK" 
 										  otherButtonTitles:nil];
 	UILocalNotification* localNotif = [[UILocalNotification alloc] init];
 	
@@ -30,7 +30,6 @@
 	[localNotif setSoundName:UILocalNotificationDefaultSoundName];
 	[[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
 	[localNotif release];
-	
 	[aView show];
 	[aView release];
 }
@@ -40,15 +39,29 @@
 }
 
 - (IBAction) hideTheKeyboard{
-	[messageContent resignFirstResponder];
+	[hideKbrdButton setTitle:@"Set Date/Time" forState:(UIControlState)UIControlStateNormal];
+	if ([receiveTime isHidden]) {
+		[messageContent resignFirstResponder];
+		[receiveTime setHidden:NO];
+		[hideKbrdButton setTitle:@"Send" forState:(UIControlState)UIControlStateNormal];
+	}else {
+		[receiveTime setHidden:YES];
+		[hideKbrdButton setHidden:YES];
+		//Send the notification
+		[self sendMessage];
+	}
+
 }
 
-- (IBAction) showHiddenButton{
-	[hideKbrdButton setHidden:NO];
+-(IBAction) justHideTheKeyboard{
+	[messageContent resignFirstResponder];
+	[hideKbrdButton setHidden:YES];
+	[receiveTime setHidden:YES];
+	[hideKbrdButton setTitle:@"Set Date/Time" forState:(UIControlState)UIControlStateNormal];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
-	[hideKbrdButton setHidden:YES];
+	//[hideKbrdButton setHidden:YES];
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
@@ -59,19 +72,42 @@
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-    
     // Override point for customization after application launch.
+
 	NSDate* now = [[NSDate alloc] init];
 	[receiveTime setTimeZone:[NSTimeZone localTimeZone]];
 	[receiveTime setMinimumDate:now];
 	[receiveTime setDate:now];
 	[now release];
-	
+
     [window makeKeyAndVisible];
 	
 	return YES;
 }
 
+
+//notification handling for when the app is in the foreground.
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification{
+	UIAlertView* alertNotification = [[UIAlertView alloc] initWithTitle:@"Hi, Future Me" 
+																message:[notification alertBody] 
+															   delegate:nil 
+													  cancelButtonTitle:@"Thanks" 
+													  otherButtonTitles:nil];
+	[alertNotification show];
+	[alertNotification release];
+	
+
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    /*
+     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+     */
+	NSDate* now = [[NSDate alloc] init];
+	[receiveTime setMinimumDate:now];
+	[receiveTime setDate:now];
+	[now release];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     /*
@@ -96,15 +132,7 @@
 }
 
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    /*
-     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-     */
-	NSDate* now = [[NSDate alloc] init];
-	[receiveTime setMinimumDate:now];
-	[receiveTime setDate:now];
-	[now release];
-}
+
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {

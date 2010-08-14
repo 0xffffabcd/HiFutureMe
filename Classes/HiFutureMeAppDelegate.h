@@ -26,6 +26,7 @@
 - (IBAction) clear;
 - (IBAction) hideTheKeyboard;
 - (IBAction) showHiddenButton;
+- (IBAction) justHideTheKeyboard;
 
 
 @end
