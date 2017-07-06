@@ -79,7 +79,12 @@
 	[receiveTime setMinimumDate:now];
 	[receiveTime setDate:now];
 	[now release];
-
+    
+    // AA 7/06/2017 10:35 GMT Included view controller (required for later iOS versions).
+    UIViewController *viewController;
+    viewController = [[[UIViewController alloc] initWithNibName:nil bundle:nil] autorelease];
+    [window setRootViewController:viewController];
+    
     [window makeKeyAndVisible];
 	
 	return YES;
